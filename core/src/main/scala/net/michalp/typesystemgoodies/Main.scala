@@ -20,12 +20,10 @@ import cats.effect.IO
 import cats.effect.IOApp
 import cats.effect._
 
-
 object Main extends IOApp {
-  
+
   override def run(args: List[String]): IO[ExitCode] = {
-    Server
-      .resource
+    Server.resource
       .use { _ =>
         Checks.verifyInvalidOrder *> Checks.verifyValidOrder
       }

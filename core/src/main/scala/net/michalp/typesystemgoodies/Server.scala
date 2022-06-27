@@ -1,6 +1,5 @@
 package net.michalp.typesystemgoodies
 
-
 import cats.effect.IO
 import eu.timepit.refined.auto._
 import org.http4s.HttpRoutes
@@ -22,4 +21,5 @@ object Server {
     .bindHttp(8080, "localhost")
     .withHttpApp(Router("/" -> routes).orNotFound)
     .resource
+
 }

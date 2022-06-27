@@ -1,6 +1,5 @@
 package net.michalp.typesystemgoodies
 
-
 import cats.data.NonEmptyList
 import cats.effect.IO
 import eu.timepit.refined.auto._
@@ -9,7 +8,9 @@ import sttp.client3._
 
 object Checks {
   private val backend: SttpBackend[Identity, Any] = HttpURLConnectionBackend()
-  private val request = basicRequest.response(asStringAlways).post(uri"http://localhost:8080/validate")
+  private val request = basicRequest
+    .response(asStringAlways)
+    .post(uri"http://localhost:8080/validate")
 
   val verifyInvalidOrder = IO {
     val result = request.body("{}").send(backend)
@@ -18,7 +19,7 @@ object Checks {
   }
 
   val verifyValidOrder = IO {
-    val body = 
+    val body =
       Order(
         "17da8323-6e08-4519-aab6-ee0a9f9a30b3",
         NonEmptyList.of(

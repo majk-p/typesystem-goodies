@@ -1,6 +1,5 @@
 package net.michalp.typesystemgoodies
 
-
 import sttp.tapir._
 import sttp.tapir.json.circe._
 import sttp.tapir.generic.auto._
