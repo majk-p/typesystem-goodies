@@ -16,46 +16,64 @@
 
 package net.michalp.typesystemgoodies
 
-import cats.effect.{IO, IOApp}
-
-
+import cats.data.NonEmptyList
+import cats.effect.IO
+import cats.effect.IOApp
 import cats.effect._
-import cats.syntax.all._
+import cats.implicits._
+import eu.timepit.refined.auto._
+import io.circe.syntax._
 import org.http4s.HttpRoutes
-import org.http4s.server.Router
 import org.http4s.blaze.server.BlazeServerBuilder
+import org.http4s.server.Router
 import sttp.client3._
-import sttp.tapir._
 import sttp.tapir.server.http4s.Http4sServerInterpreter
 
 import scala.concurrent.ExecutionContext
 
+
 object Main extends IOApp {
-  // the endpoint: single fixed path input ("hello"), single query parameter
-  // corresponds to: GET /hello?name=...
-  val helloWorld: PublicEndpoint[String, Unit, String, Any] =
-    endpoint.get.in("hello").in(query[String]("name")).out(stringBody)
+
+  val validateRoute = 
+    OrderEndpoints.validate.serverLogic(_ => ().asRight[Unit].pure[IO])
 
   // converting an endpoint to a route (providing server-side logic); extension method comes from imported packages
   val helloWorldRoutes: HttpRoutes[IO] =
-    Http4sServerInterpreter[IO]().toRoutes(helloWorld.serverLogic(name => IO(s"Hello, $name!".asRight[Unit])))
+    Http4sServerInterpreter[IO]().toRoutes(
+      validateRoute
+    )
 
-  implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
-
-  override def run(args: List[String]): IO[ExitCode] = {
-    // starting the server
-    BlazeServerBuilder[IO]
-      .withExecutionContext(ec)
+  val serverResource = BlazeServerBuilder[IO]
+      .withExecutionContext(ExecutionContext.global)
       .bindHttp(8080, "localhost")
       .withHttpApp(Router("/" -> helloWorldRoutes).orNotFound)
       .resource
+  
+  val backend: SttpBackend[Identity, Any] = HttpURLConnectionBackend()
+  val request = basicRequest.response(asStringAlways).post(uri"http://localhost:8080/validate")
+  
+  val verifyInvalidOrder = IO {
+    val result = request.body("{}").send(backend)
+    assert(result.code.code == 400)
+    println("Successfuly verified invaid order")
+  }
+  
+  val verifyValidOrder = IO {
+    val body = 
+      Order(
+        "17da8323-6e08-4519-aab6-ee0a9f9a30b3",
+        NonEmptyList.of(
+          OrderLine("product1", 10)
+        )
+      )
+    val result = request.body(body.asJson.toString()).send(backend)
+    assert(result.code.code == 200)
+    println("Successfuly verified vaid order")
+  }
+  override def run(args: List[String]): IO[ExitCode] = {
+    serverResource
       .use { _ =>
-        IO {
-          val backend: SttpBackend[Identity, Any] = HttpURLConnectionBackend()
-          val result: String = basicRequest.response(asStringAlways).get(uri"http://localhost:8080/hello?name=Frodo").send(backend).body
-          println("Got result: " + result)
-          assert(result == "Hello, Frodo!")
-        }
+        verifyInvalidOrder *> verifyValidOrder
       }
       .as(ExitCode.Success)
   }

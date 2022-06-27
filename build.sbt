@@ -20,6 +20,7 @@ ThisBuild / scalaVersion := Scala213 // the default Scala
 lazy val Versions = new {
   val cats = "2.8.0"
   val catsEffect = "3.3.12"
+  val circe = "0.14.2"
   val tapir = "1.0.1"
   val http4s = "0.23.12"
 }
@@ -30,7 +31,8 @@ lazy val root = project
     name := "typesystem-goodies",
     libraryDependencies ++= Seq(
       "org.typelevel" %%% "cats-core" % Versions.cats,
-      "org.typelevel" %%% "cats-effect" % Versions.catsEffect,
+      "org.typelevel" %%% "cats-effect" % Versions.catsEffect,  
+      "io.circe" %% "circe-refined" % Versions.circe,
       "com.softwaremill.sttp.tapir" %% "tapir-core" % Versions.tapir,
       "com.softwaremill.sttp.tapir" %% "tapir-refined" % Versions.tapir,
       "com.softwaremill.sttp.tapir" %% "tapir-cats" % Versions.tapir,
