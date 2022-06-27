@@ -19,7 +19,7 @@ package net.michalp.typesystemgoodies
 case class UnsafeOrderLine(product: String, quantity: Int)
 object UnsafeOrderLine {
   def safeApply(product: String, quantity: Int): UnsafeOrderLine = {
-    if (product.isBlank())
+    if (product.isEmpty())
       throw new RuntimeException("Product is empty")
     else if (quantity <= 0)
       throw new RuntimeException("Quantity lower than 1")
