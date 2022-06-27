@@ -31,7 +31,7 @@ lazy val root = project
     name := "typesystem-goodies",
     libraryDependencies ++= Seq(
       "org.typelevel" %%% "cats-core" % Versions.cats,
-      "org.typelevel" %%% "cats-effect" % Versions.catsEffect,  
+      "org.typelevel" %%% "cats-effect" % Versions.catsEffect,
       "io.circe" %% "circe-refined" % Versions.circe,
       "com.softwaremill.sttp.tapir" %% "tapir-core" % Versions.tapir,
       "com.softwaremill.sttp.tapir" %% "tapir-refined" % Versions.tapir,
@@ -44,4 +44,3 @@ lazy val root = project
       "org.typelevel" %%% "munit-cats-effect-3" % "1.0.7" % Test
     )
   )
-
