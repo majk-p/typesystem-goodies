@@ -27,6 +27,7 @@ object Main extends IOApp {
       .use { _ =>
         Checks.verifyInvalidOrder *> Checks.verifyValidOrder
       }
+      // .useForever // this will start the server and listen for requests infinitely
       .as(ExitCode.Success)
   }
 }

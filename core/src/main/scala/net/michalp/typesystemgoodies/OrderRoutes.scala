@@ -20,6 +20,9 @@ import cats.effect._
 import cats.implicits._
 
 object OrderRoutes {
+
+  val logic: Order => Unit = _ => ()
+
   val validate =
-    OrderEndpoints.validate.serverLogic(_ => ().asRight[Unit].pure[IO])
+    OrderEndpoints.validate.serverLogic(logic(_).asRight[Unit].pure[IO])
 }

@@ -39,6 +39,7 @@ lazy val root = project
       "com.softwaremill.sttp.tapir" %% "tapir-json-circe" % Versions.tapir,
       "com.softwaremill.sttp.tapir" %% "tapir-http4s-server" % Versions.tapir,
       "com.softwaremill.sttp.tapir" %% "tapir-sttp-client" % Versions.tapir,
+      "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % Versions.tapir,
       "org.http4s" %% "http4s-blaze-server" % Versions.http4s,
       "org.scalameta" %%% "munit" % "0.7.29" % Test,
       "org.typelevel" %%% "munit-cats-effect-3" % "1.0.7" % Test

@@ -42,6 +42,7 @@ object Checks {
           OrderLine("product1", 10)
         )
       )
+    println(body.asJson.toString())
     val result = request.body(body.asJson.toString()).send(backend)
     assert(result.code.code == 200)
     println("Successfuly verified vaid order")

@@ -21,15 +21,22 @@ import eu.timepit.refined.auto._
 import org.http4s.HttpRoutes
 import org.http4s.blaze.server.BlazeServerBuilder
 import org.http4s.server.Router
+import sttp.tapir._
 import sttp.tapir.server.http4s.Http4sServerInterpreter
+import sttp.tapir.swagger.bundle.SwaggerInterpreter
 
 import scala.concurrent.ExecutionContext
 
 object Server {
 
+  val myEndpoints: List[AnyEndpoint] = List(OrderEndpoints.validate)
+  val swaggerEndpoints = SwaggerInterpreter().fromEndpoints[IO](myEndpoints, "My App", "1.0")
+
   private val routes: HttpRoutes[IO] =
     Http4sServerInterpreter[IO]().toRoutes(
-      OrderRoutes.validate
+      List(
+        OrderRoutes.validate,
+      ) ++ swaggerEndpoints
     )
 
   val resource = BlazeServerBuilder[IO]
