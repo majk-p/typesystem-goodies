@@ -30,12 +30,13 @@ import scala.concurrent.ExecutionContext
 object Server {
 
   val myEndpoints: List[AnyEndpoint] = List(OrderEndpoints.validate)
-  val swaggerEndpoints = SwaggerInterpreter().fromEndpoints[IO](myEndpoints, "My App", "1.0")
+  val swaggerEndpoints =
+    SwaggerInterpreter().fromEndpoints[IO](myEndpoints, "My App", "1.0")
 
   private val routes: HttpRoutes[IO] =
     Http4sServerInterpreter[IO]().toRoutes(
       List(
-        OrderRoutes.validate,
+        OrderRoutes.validate
       ) ++ swaggerEndpoints
     )
 
