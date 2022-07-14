@@ -1,3 +1,3 @@
 ## Typesystem goodies
 
-This repository holds example code used in the talk "Runtime errors and how to avoid them".
+This repository holds example code used in the talk "Typesafe techniques for a better sleep at night".
